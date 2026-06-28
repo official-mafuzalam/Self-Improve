@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors - More Vibrant -->
+    <color name="primary">#6200EE</color> <!-- Vibrant Violet -->
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#BB86FC</color>
+    <color name="onPrimaryContainer">#3700B3</color>
+
+    <!-- Secondary Colors - Deep Blue/Teal -->
+    <color name="secondary">#03DAC6</color> <!-- Vibrant Teal -->
+    <color name="onSecondary">#000000</color>
+    <color name="secondaryContainer">#018786</color>
+    <color name="onSecondaryContainer">#FFFFFF</color>
+
+    <!-- Background and Surface -->
+    <color name="background">#FFFFFF</color>
+    <color name="onBackground">#1C1B1F</color>
+    <color name="surface">#FDFDFD</color> <!-- Almost White -->
+    <color name="onSurface">#1C1B1F</color>
+    <color name="surfaceVariant">#EEEEEE</color>
+    <color name="onSurfaceVariant">#49454F</color>
+
+    <!-- Custom Colors - Refined -->
+    <color name="success_green">#4CAF50</color> <!-- Stronger Green -->
+    <color name="failure_red">#F44336</color> <!-- Stronger Red -->
+    <color name="streak_orange">#FF9800</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Self Improve</string>
+    <string name="default_date">Monday, Oct 24</string>
+    <string name="streak_format">%d-Day Streak 🔥</string>
+    <string name="daily_habits">Daily Habits</string>
+    <string name="daily_evaluation">Daily Evaluation</string>
+    <string name="day_status">Day Status</string>
+    <string name="status_great">Great</string>
+    <string name="status_ok">Ok</string>
+    <string name="status_bad">Bad</string>
+    <string name="regrets_notes">Regrets &amp; Notes</string>
+    <string name="daily_motivation">Daily Motivation</string>
+    <string name="default_quote">The only person you are destined to become is the person you decide to be.</string>
+    <string name="default_author">- Ralph Waldo Emerson</string>
+    <string name="habit_success">Success</string>
+    <string name="habit_failed">Failed</string>
+    <string name="habit_no_porn">No Porn</string>
+    <string name="habit_no_sugar">No Sugar</string>
+    <string name="habit_no_fast_food">No Fast Food</string>
+    <string name="habit_7hrs_sleep">7 Hrs Sleep</string>
+    <string name="habit_2km_running">2 KM Running</string>
+    <string name="habit_workout">Workout at Home</string>
+    <string name="habit_cold_shower">Cold Shower</string>
+    <string name="habit_study">Study > 1 Hr</string>
+    <string name="habit_screen_time">Screen Time &lt; 3 Hrs</string>
+</resources>

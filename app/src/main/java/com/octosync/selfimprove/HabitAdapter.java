@@ -11,14 +11,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHolder> {
 
-    private final List<Habit> habits;
+    private List<Habit> habits = new ArrayList<>();
+    private final OnHabitStatusChangeListener listener;
 
-    public HabitAdapter(List<Habit> habits) {
+    public interface OnHabitStatusChangeListener {
+        void onStatusChanged(Habit habit);
+    }
+
+    public HabitAdapter(OnHabitStatusChangeListener listener) {
+        this.listener = listener;
+    }
+
+    public void setHabits(List<Habit> habits) {
         this.habits = habits;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -31,12 +42,11 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
     @Override
     public void onBindViewHolder(@NonNull HabitViewHolder holder, int position) {
         Habit habit = habits.get(position);
-        holder.tvHabitName.setText(habit.getNameResId());
+        holder.tvHabitName.setText(habit.getName());
 
-        // Reset listeners to avoid triggering on state restoration
+        // Reset listeners
         holder.toggleGroup.clearOnButtonCheckedListeners();
         
-        // Set checked state based on habit status
         if (habit.getStatus() == Habit.Status.SUCCESS) {
             holder.toggleGroup.check(R.id.btnSuccess);
         } else if (habit.getStatus() == Habit.Status.FAILED) {
@@ -53,11 +63,11 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
                     habit.setStatus(Habit.Status.FAILED);
                 }
             } else {
-                // If the currently checked button is unchecked and no other button is checked
                 if (group.getCheckedButtonId() == View.NO_ID) {
                     habit.setStatus(Habit.Status.PENDING);
                 }
             }
+            listener.onStatusChanged(habit);
         });
     }
 

@@ -1,26 +1,39 @@
 package com.octosync.selfimprove;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "habits")
 public class Habit {
     public enum Status {
         PENDING, SUCCESS, FAILED
     }
 
+    @PrimaryKey(autoGenerate = true)
     private int id;
-    private int nameResId;
+    private String name;
     private Status status;
 
-    public Habit(int id, int nameResId) {
-        this.id = id;
-        this.nameResId = nameResId;
+    public Habit(String name) {
+        this.name = name;
         this.status = Status.PENDING;
+    }
+
+    // Room needs this
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getNameResId() {
-        return nameResId;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Status getStatus() {

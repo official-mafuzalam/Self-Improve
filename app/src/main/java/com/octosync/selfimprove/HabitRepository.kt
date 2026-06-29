@@ -1,41 +1,24 @@
-package com.octosync.selfimprove;
+package com.octosync.selfimprove
 
-import android.app.Application;
+import kotlinx.coroutines.flow.Flow
 
-import androidx.lifecycle.LiveData;
+class HabitRepository(private val habitDao: HabitDao) {
 
-import java.util.List;
+    val allHabits: Flow<List<Habit>> = habitDao.getAllHabits()
 
-public class HabitRepository {
-
-    private HabitDao habitDao;
-    private LiveData<List<Habit>> allHabits;
-
-    public HabitRepository(Application application) {
-        AppDatabase db = AppDatabase.getDatabase(application);
-        habitDao = db.habitDao();
-        allHabits = habitDao.getAllHabits();
+    fun getHabitsForDate(date: Long): Flow<List<Habit>> {
+        return habitDao.getHabitsForDate(date)
     }
 
-    public LiveData<List<Habit>> getAllHabits() {
-        return allHabits;
+    suspend fun insert(habit: Habit) {
+        habitDao.insert(habit)
     }
 
-    public void insert(Habit habit) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            habitDao.insert(habit);
-        });
+    suspend fun update(habit: Habit) {
+        habitDao.update(habit)
     }
 
-    public void update(Habit habit) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            habitDao.update(habit);
-        });
-    }
-
-    public void delete(Habit habit) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            habitDao.delete(habit);
-        });
+    suspend fun delete(habit: Habit) {
+        habitDao.delete(habit)
     }
 }

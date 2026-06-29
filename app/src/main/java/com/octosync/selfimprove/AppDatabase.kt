@@ -1,49 +1,80 @@
-package com.octosync.selfimprove;
+package com.octosync.selfimprove
 
-import android.content.Context;
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
+@Database(entities = [Habit::class], version = 4, exportSchema = false)
+@TypeConverters(AppDatabase.Converters::class)
+abstract class AppDatabase : RoomDatabase() {
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+    abstract fun habitDao(): HabitDao
 
-@Database(entities = {Habit.class}, version = 1, exportSchema = false)
-@TypeConverters({AppDatabase.Converters.class})
-public abstract class AppDatabase extends RoomDatabase {
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
 
-    public abstract HabitDao habitDao();
-
-    private static volatile AppDatabase INSTANCE;
-    private static final int NUMBER_OF_THREADS = 4;
-    public static final ExecutorService databaseWriteExecutor =
-            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
-    public static AppDatabase getDatabase(final Context context) {
-        if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "self_improve_db")
-                            .build();
-                }
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "self_improve_db"
+                )
+                .addCallback(object : RoomDatabase.Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
+                        val today = System.currentTimeMillis() / (24 * 60 * 60 * 1000) * (24 * 60 * 60 * 1000)
+                        val defaults = listOf(
+                            "('7 Hrs Sleep', 'PHYSICAL', 'PENDING', $today)",
+                            "('2 KM Running', 'PHYSICAL', 'PENDING', $today)",
+                            "('Workout at Home', 'PHYSICAL', 'PENDING', $today)",
+                            "('Cold Shower', 'PHYSICAL', 'PENDING', $today)",
+                            "('Study > 1 Hr', 'MENTAL', 'PENDING', $today)",
+                            "('Screen Time < 3 Hrs', 'PRODUCTIVITY', 'PENDING', $today)",
+                            "('No Porn', 'MENTAL', 'PENDING', $today)",
+                            "('No Sugar', 'PHYSICAL', 'PENDING', $today)",
+                            "('No Fast Food', 'PHYSICAL', 'PENDING', $today)"
+                        )
+                        defaults.forEach { values ->
+                            db.execSQL("INSERT INTO habits (name, category, status, date) VALUES $values")
+                        }
+                    }
+                })
+                .fallbackToDestructiveMigration()
+                .build()
+                INSTANCE = instance
+                instance
             }
         }
-        return INSTANCE;
     }
 
-    public static class Converters {
+    class Converters {
         @TypeConverter
-        public static Habit.Status fromString(String value) {
-            return value == null ? null : Habit.Status.valueOf(value);
+        fun fromString(value: String?): Habit.Status? {
+            return value?.let { Habit.Status.valueOf(it) }
         }
 
         @TypeConverter
-        public static String statusToString(Habit.Status status) {
-            return status == null ? null : status.name();
+        fun statusToString(status: Habit.Status?): String? {
+            return status?.name
+        }
+
+        @TypeConverter
+        fun fromCategoryString(value: String?): Habit.Category? {
+            return value?.let { Habit.Category.valueOf(it) }
+        }
+
+        @TypeConverter
+        fun categoryToString(category: Habit.Category?): String? {
+            return category?.name
         }
     }
 }

@@ -1,25 +1,22 @@
-package com.octosync.selfimprove;
+package com.octosync.selfimprove
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-public interface HabitDao {
-    @Query("SELECT * FROM habits")
-    LiveData<List<Habit>> getAllHabits();
+interface HabitDao {
+    @Query("SELECT * FROM habits ORDER BY date DESC")
+    fun getAllHabits(): Flow<List<Habit>>
 
-    @Insert
-    void insert(Habit habit);
+    @Query("SELECT * FROM habits WHERE date = :date")
+    fun getHabitsForDate(date: Long): Flow<List<Habit>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(habit: Habit)
 
     @Update
-    void update(Habit habit);
+    suspend fun update(habit: Habit)
 
     @Delete
-    void delete(Habit habit);
+    suspend fun delete(habit: Habit)
 }
